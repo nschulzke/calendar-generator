@@ -1,5 +1,8 @@
 package dev.schulzke
 
+import dev.schulzke.calendar.model.CalMonth
+import dev.schulzke.calendar.model.CalYear
+import dev.schulzke.calendar.model.CalendarConfig
 import kotlinx.html.*
 import java.time.DayOfWeek
 import java.time.format.TextStyle

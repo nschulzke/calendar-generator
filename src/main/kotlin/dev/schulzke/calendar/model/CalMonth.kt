@@ -1,34 +1,10 @@
-package dev.schulzke
+package dev.schulzke.calendar.model
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.html.*
-import io.ktor.server.http.content.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import kotlinx.datetime.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import java.io.File
-import java.lang.Integer.max
 import java.time.format.TextStyle
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.ceil
-
-@Serializable
-class CalYear private constructor(
-    private val months: List<CalMonth>,
-) : Iterable<CalMonth> by months {
-    companion object {
-        fun of(year: Int): CalYear {
-            return CalYear(Month.values().map {
-                CalMonth.of(year, it)
-            } + listOf(CalMonth.of(year + 1, Month.JANUARY, includeYearInName = true)))
-        }
-    }
-}
 
 @Serializable
 class CalMonth private constructor(
@@ -48,7 +24,7 @@ class CalMonth private constructor(
 
     fun numberOfWeeks(startOfWeek: DayOfWeek, min: Int? = null): Int =
          if (min === null) ceil((initialPaddingSize(startOfWeek) + numberOfDays) / 7.0).toInt()
-        else max(numberOfWeeks(startOfWeek), min)
+        else Integer.max(numberOfWeeks(startOfWeek), min)
 
     fun previewsAtStart(startOfWeek: DayOfWeek): Boolean =
         initialPaddingSize(startOfWeek) >= 2
@@ -88,45 +64,6 @@ class CalMonth private constructor(
                 if (includeYearInName) "${month.getDisplayName(TextStyle.FULL, Locale.US)} $year"
                 else month.getDisplayName(TextStyle.FULL, Locale.US),
             )
-        }
-    }
-}
-
-private fun DayOfWeek.distanceTo(other: DayOfWeek): Int {
-    return abs(other.value - this.value)
-}
-
-@Serializable
-class CalDay(
-    val date: LocalDate,
-)
-
-@Serializable
-data class CalendarConfig(
-    val startOfWeek: DayOfWeek,
-    val holidays: Map<LocalDate, List<String>>
-)
-
-val json = Json {
-    ignoreUnknownKeys = true
-}
-
-fun Application.calendarRoutes() {
-    routing {
-        static {
-            files("static")
-        }
-
-        get("/cal/{config}/{year}") {
-            val configPath = call.parameters["config"]!!
-            val year = call.parameters["year"]?.toIntOrNull()
-            val config = json.decodeFromString<CalendarConfig>(File("configurations/${configPath}/config.json").readText())
-            if (year == null) {
-                call.respondText(text = "400: Bad Request", status = HttpStatusCode.BadRequest)
-            } else {
-                val calYear = CalYear.of(year)
-                call.respondHtml { calendarTemplate(calYear, config) }
-            }
         }
     }
 }
