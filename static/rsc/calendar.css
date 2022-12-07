@@ -1,0 +1,82 @@
+@page {
+    size: A3 landscape;
+}
+
+.calendar-cover {
+    break-inside: avoid;
+    break-after: left;
+    background-color: purple;
+    width: 100%;
+    height: 100%;
+}
+
+.month-cover {
+    break-inside: avoid;
+    break-after: right;
+    background-color: yellow;
+    width: 100%;
+    height: 100%;
+}
+
+.month {
+    display: flex;
+    flex-direction: column;
+}
+
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+}
+
+.month.weeks-4 > .month-grid {
+    grid-template-rows: repeat(4, 1fr);
+}
+
+.month.weeks-5 > .month-grid {
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.month.weeks-6 > .month-grid {
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.month-grid .day {
+    overflow: auto;
+}
+
+.month-name {
+    text-align: center;
+}
+
+.full.month {
+    break-inside: avoid;
+    break-after: left;
+    width: 100%;
+    height: 100%;
+}
+
+.full > .month-grid {
+    background-color: black;
+    gap: 1px;
+    padding: 1px;
+}
+
+.full > .month-name {
+    font-size: 30px;
+    padding: 8px;
+}
+
+.full > .month-grid > .day {
+    background-color: white;
+    padding: 10px;
+}
+
+.preview.month {
+    background-color: white;
+}
+
+.preview > .month-grid > .day {
+    display: grid;
+    place-items: center;
+}
