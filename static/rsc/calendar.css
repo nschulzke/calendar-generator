@@ -2,6 +2,15 @@
     size: A3 landscape;
 }
 
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+}
+
 .calendar-cover {
     break-inside: avoid;
     break-after: left;
@@ -23,10 +32,18 @@
     flex-direction: column;
 }
 
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.weekday {
+    text-align: center;
+}
+
 .month-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    flex: 1;
 }
 
 .month.weeks-4 > .month-grid {
@@ -60,16 +77,19 @@
     background-color: black;
     gap: 1px;
     padding: 1px;
+    flex: 1;
+    min-height: 0;
 }
 
 .full > .month-name {
-    font-size: 30px;
-    padding: 8px;
+    font-size: 2rem;
+    padding: 0.5rem;
 }
 
-.full > .month-grid > .day {
+.full > .month-grid > * {
     background-color: white;
-    padding: 10px;
+    padding: 0.6rem;
+    overflow: hidden;
 }
 
 .preview.month {

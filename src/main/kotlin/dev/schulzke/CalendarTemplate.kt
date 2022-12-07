@@ -3,23 +3,41 @@ package dev.schulzke
 import kotlinx.html.*
 import java.time.DayOfWeek
 
-fun HtmlBlockTag.month(month: CalMonth, classes: String, startOfWeek: DayOfWeek, minWeeks: Int? = null) {
+fun HtmlBlockTag.month(
+    month: CalMonth,
+    classes: String,
+    startOfWeek: DayOfWeek,
+    includeWeekdays: Boolean = false,
+    minWeeks: Int? = null,
+) {
     div(classes = "month $classes weeks-${month.numberOfWeeks(startOfWeek, minWeeks)}") {
         div(classes = "month-name") {
             +month.name
+        }
+        if (includeWeekdays) {
+            div(classes = "weekdays") {
+                val weekDays = ((startOfWeek.value - 1)..(5 + startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
+                for (day in weekDays) {
+                    div(classes = "weekday") {
+                        +day.name
+                    }
+                }
+            }
         }
         div(classes = "month-grid") {
             val dayIter = month.iterator()
             var startPadding = month.initialPaddingSize(startOfWeek)
             var fieldsFilled = 0;
             if (month.previewsAtStart(startOfWeek)) {
-                if (month.previousMonth != null) {
-                    month(month.previousMonth, "preview", startOfWeek)
+                if (month.previousMonth != null && month.nextMonth != null) {
+                    val maxWeeks = maxOf(
+                        month.previousMonth.numberOfWeeks(startOfWeek),
+                        month.nextMonth.numberOfWeeks(startOfWeek)
+                    )
+                    month(month.previousMonth, "preview", startOfWeek, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
-                }
-                if (month.nextMonth != null) {
-                    month(month.nextMonth, "preview", startOfWeek)
+                    month(month.nextMonth, "preview", startOfWeek, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
                 }
@@ -49,11 +67,13 @@ fun HtmlBlockTag.month(month: CalMonth, classes: String, startOfWeek: DayOfWeek,
                 endPadding--
             }
             if (!month.previewsAtStart(startOfWeek)) {
-                if (month.previousMonth != null) {
-                    month(month.previousMonth, "preview", startOfWeek)
-                }
-                if (month.nextMonth != null) {
-                    month(month.nextMonth, "preview", startOfWeek)
+                if (month.previousMonth != null && month.nextMonth != null) {
+                    val maxWeeks = maxOf(
+                        month.previousMonth.numberOfWeeks(startOfWeek),
+                        month.nextMonth.numberOfWeeks(startOfWeek)
+                    )
+                    month(month.previousMonth, "preview", startOfWeek, minWeeks = maxWeeks)
+                    month(month.nextMonth, "preview", startOfWeek, minWeeks = maxWeeks)
                 }
             } else {
                 while (endPadding > 0) {
@@ -76,6 +96,13 @@ fun HTML.calendarTemplate(
         styleLink("/rsc/interface.css")
         styleLink("/rsc/calendar.css")
         script(src = "/rsc/paged.polyfill.js") {}
+        unsafe {
+            +"""
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+            """.trimIndent()
+        }
     }
     body {
         div(classes = "calendar-cover") {
@@ -84,7 +111,7 @@ fun HTML.calendarTemplate(
         year.forEach { month ->
             div(classes = "month-cover") {
             }
-            month(month, "full", startOfWeek, 5)
+            month(month, "full", startOfWeek, true, 5)
         }
     }
 }
