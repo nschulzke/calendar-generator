@@ -12,6 +12,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.lang.Integer.max
+import java.time.format.TextStyle
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.ceil
 
@@ -83,8 +85,8 @@ class CalMonth private constructor(
                 else of(year, month + 1, false),
                 days = days,
                 name =
-                if (includeYearInName) "${month.name} $year"
-                else month.name,
+                if (includeYearInName) "${month.getDisplayName(TextStyle.FULL, Locale.US)} $year"
+                else month.getDisplayName(TextStyle.FULL, Locale.US),
             )
         }
     }

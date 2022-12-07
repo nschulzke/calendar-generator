@@ -2,6 +2,8 @@ package dev.schulzke
 
 import kotlinx.html.*
 import java.time.DayOfWeek
+import java.time.format.TextStyle
+import java.util.*
 
 fun HtmlBlockTag.month(
     month: CalMonth,
@@ -19,7 +21,7 @@ fun HtmlBlockTag.month(
                 val weekDays = ((config.startOfWeek.value - 1)..(5 + config.startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
                 for (day in weekDays) {
                     div(classes = "weekday") {
-                        +day.name
+                        +day.getDisplayName(TextStyle.FULL, Locale.US)
                     }
                 }
             }
