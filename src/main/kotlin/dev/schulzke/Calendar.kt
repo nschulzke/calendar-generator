@@ -8,6 +8,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.datetime.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import java.io.File
 import java.lang.Integer.max
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -96,20 +99,31 @@ class CalDay(
     val date: LocalDate,
 )
 
+@Serializable
+data class CalendarConfig(
+    val startOfWeek: DayOfWeek,
+    val holidays: Map<LocalDate, List<String>>
+)
+
+val json = Json {
+    ignoreUnknownKeys = true
+}
+
 fun Application.calendarRoutes() {
     routing {
         static {
             files("static")
         }
 
-        get("/{year}") {
+        get("/cal/{config}/{year}") {
+            val configPath = call.parameters["config"]!!
             val year = call.parameters["year"]?.toIntOrNull()
-            val startOfWeek = call.request.queryParameters["startOfWeek"]?.toIntOrNull()?.let { DayOfWeek(it) } ?: DayOfWeek.MONDAY
+            val config = json.decodeFromString<CalendarConfig>(File("configurations/${configPath}/config.json").readText())
             if (year == null) {
                 call.respondText(text = "400: Bad Request", status = HttpStatusCode.BadRequest)
             } else {
                 val calYear = CalYear.of(year)
-                call.respondHtml { calendarTemplate(calYear, startOfWeek) }
+                call.respondHtml { calendarTemplate(calYear, config) }
             }
         }
     }

@@ -6,17 +6,17 @@ import java.time.DayOfWeek
 fun HtmlBlockTag.month(
     month: CalMonth,
     classes: String,
-    startOfWeek: DayOfWeek,
-    includeWeekdays: Boolean = false,
+    config: CalendarConfig,
+    fullMonth: Boolean = false,
     minWeeks: Int? = null,
 ) {
-    div(classes = "month $classes weeks-${month.numberOfWeeks(startOfWeek, minWeeks)}") {
+    div(classes = "month $classes weeks-${month.numberOfWeeks(config.startOfWeek, minWeeks)}") {
         div(classes = "month-name") {
             +month.name
         }
-        if (includeWeekdays) {
+        if (fullMonth) {
             div(classes = "weekdays") {
-                val weekDays = ((startOfWeek.value - 1)..(5 + startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
+                val weekDays = ((config.startOfWeek.value - 1)..(5 + config.startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
                 for (day in weekDays) {
                     div(classes = "weekday") {
                         +day.name
@@ -26,18 +26,18 @@ fun HtmlBlockTag.month(
         }
         div(classes = "month-grid") {
             val dayIter = month.iterator()
-            var startPadding = month.initialPaddingSize(startOfWeek)
+            var startPadding = month.initialPaddingSize(config.startOfWeek)
             var fieldsFilled = 0;
-            if (month.previewsAtStart(startOfWeek)) {
+            if (month.previewsAtStart(config.startOfWeek)) {
                 if (month.previousMonth != null && month.nextMonth != null) {
                     val maxWeeks = maxOf(
-                        month.previousMonth.numberOfWeeks(startOfWeek),
-                        month.nextMonth.numberOfWeeks(startOfWeek)
+                        month.previousMonth.numberOfWeeks(config.startOfWeek),
+                        month.nextMonth.numberOfWeeks(config.startOfWeek)
                     )
-                    month(month.previousMonth, "preview", startOfWeek, minWeeks = maxWeeks)
+                    month(month.previousMonth, "preview", config, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
-                    month(month.nextMonth, "preview", startOfWeek, minWeeks = maxWeeks)
+                    month(month.nextMonth, "preview", config, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
                 }
@@ -52,12 +52,24 @@ fun HtmlBlockTag.month(
             while (dayIter.hasNext()) {
                 val day = dayIter.next()
                 div(classes = "day") {
-                    +day.date.dayOfMonth.toString()
+                    div(classes = "day-label") {
+                        +day.date.dayOfMonth.toString()
+                    }
+                    val holidays = config.holidays[day.date]
+                    if (fullMonth && holidays?.isNotEmpty() == true) {
+                        div(classes = "events") {
+                            for (holiday in holidays) {
+                                div(classes = "event") {
+                                    +holiday
+                                }
+                            }
+                        }
+                    }
                 }
                 fieldsFilled++
             }
             var endPadding = (7 - (fieldsFilled % 7)) % 7
-            if (minWeeks != null && month.numberOfWeeks(startOfWeek) < minWeeks) {
+            if (minWeeks != null && month.numberOfWeeks(config.startOfWeek) < minWeeks) {
                 endPadding += 7
             }
             while (endPadding > 2) {
@@ -66,14 +78,14 @@ fun HtmlBlockTag.month(
                 }
                 endPadding--
             }
-            if (!month.previewsAtStart(startOfWeek)) {
+            if (!month.previewsAtStart(config.startOfWeek)) {
                 if (month.previousMonth != null && month.nextMonth != null) {
                     val maxWeeks = maxOf(
-                        month.previousMonth.numberOfWeeks(startOfWeek),
-                        month.nextMonth.numberOfWeeks(startOfWeek)
+                        month.previousMonth.numberOfWeeks(config.startOfWeek),
+                        month.nextMonth.numberOfWeeks(config.startOfWeek)
                     )
-                    month(month.previousMonth, "preview", startOfWeek, minWeeks = maxWeeks)
-                    month(month.nextMonth, "preview", startOfWeek, minWeeks = maxWeeks)
+                    month(month.previousMonth, "preview", config, minWeeks = maxWeeks)
+                    month(month.nextMonth, "preview", config, minWeeks = maxWeeks)
                 }
             } else {
                 while (endPadding > 0) {
@@ -89,7 +101,7 @@ fun HtmlBlockTag.month(
 
 fun HTML.calendarTemplate(
     year: CalYear,
-    startOfWeek: DayOfWeek,
+    config: CalendarConfig,
 ) {
     head {
         title { +"Calendar" }
@@ -111,7 +123,7 @@ fun HTML.calendarTemplate(
         year.forEach { month ->
             div(classes = "month-cover") {
             }
-            month(month, "full", startOfWeek, true, 5)
+            month(month, "full", config, true, 5)
         }
     }
 }
