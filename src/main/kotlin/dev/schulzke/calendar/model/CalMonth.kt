@@ -12,6 +12,7 @@ class CalMonth private constructor(
     val nextMonth: CalMonth?,
     private val days: List<CalDay>,
     val name: String,
+    val id: String?,
 ) : Iterable<CalDay> by days {
     val startingWeekday: DayOfWeek
         get() = days.first().date.dayOfWeek
@@ -33,7 +34,7 @@ class CalMonth private constructor(
         startOfWeek.distanceTo(startingWeekday)
 
     companion object {
-        fun of(year: Int, month: Month, includePrevious: Boolean = true, includeYearInName: Boolean = false): CalMonth {
+        fun of(year: Int, month: Month, id: String? = null, includePrevious: Boolean = true, includeYearInName: Boolean = false): CalMonth {
             val days = mutableListOf<CalDay>()
             var currentDay = LocalDate(year, month, 1)
             while (currentDay.month == month) {
@@ -49,7 +50,7 @@ class CalMonth private constructor(
                     includePrevious = false,
                     includeYearInName = true,
                 )
-                else of(year, month - 1, false),
+                else of(year, month - 1, null, false),
                 nextMonth =
                 if (!includePrevious) null
                 else if (month == Month.DECEMBER) of(
@@ -58,11 +59,12 @@ class CalMonth private constructor(
                     includePrevious = false,
                     includeYearInName = true,
                 )
-                else of(year, month + 1, false),
+                else of(year, month + 1, null, false),
                 days = days,
                 name =
                 if (includeYearInName) "${month.getDisplayName(TextStyle.FULL, Locale.US)} $year"
                 else month.getDisplayName(TextStyle.FULL, Locale.US),
+                id = id,
             )
         }
     }

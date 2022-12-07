@@ -18,10 +18,14 @@ fun Application.calendarRoutes() {
             files("static")
         }
 
+        static("/cfg") {
+            files("cfg")
+        }
+
         get("/cal/{config}/{year}") {
             val configPath = call.parameters["config"]!!
             val year = call.parameters["year"]?.toIntOrNull()
-            val config = json.decodeFromString<CalendarConfig>(File("configurations/${configPath}/config.json").readText())
+            val config = json.decodeFromString<CalendarConfig>(File("cfg/${configPath}/${year}/config.json").readText())
             if (year == null) {
                 call.respondText(text = "400: Bad Request", status = HttpStatusCode.BadRequest)
             } else {

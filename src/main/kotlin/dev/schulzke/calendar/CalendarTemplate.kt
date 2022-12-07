@@ -60,11 +60,21 @@ fun HtmlBlockTag.month(
                     div(classes = "day-label") {
                         +day.date.dayOfMonth.toString()
                     }
+                    val events = config.events[day.date]
+                    if (fullMonth && events?.isNotEmpty() == true) {
+                        div(classes = "events") {
+                            for (event in events) {
+                                div(classes = "event") {
+                                    +event
+                                }
+                            }
+                        }
+                    }
                     val holidays = config.holidays[day.date]
                     if (fullMonth && holidays?.isNotEmpty() == true) {
-                        div(classes = "events") {
+                        div(classes = "holidays") {
                             for (holiday in holidays) {
-                                div(classes = "event") {
+                                div(classes = "holiday") {
                                     +holiday
                                 }
                             }
@@ -117,16 +127,17 @@ fun HTML.calendarTemplate(
             +"""
                 <link rel="preconnect" href="https://fonts.googleapis.com">
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400&family=Noto+Serif&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
             """.trimIndent()
         }
     }
     body {
         div(classes = "calendar-cover") {
-
+            style = "background-image: url(\"/cfg/${config.id}/${year.year}/cover.png\")"
         }
         year.forEach { month ->
             div(classes = "month-cover") {
+                style = "background-image: url(\"/cfg/${config.id}/${year.year}/months/${month.id}.png\")"
             }
             month(month, "full", config, true, 5)
         }

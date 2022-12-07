@@ -2,6 +2,18 @@
     size: A3 landscape;
 }
 
+@page :left {
+    margin: 0;
+}
+
+@page :right {
+    margin-top: 48px;
+}
+
+@page :first {
+    margin: 0;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -13,18 +25,20 @@ html {
 
 .calendar-cover {
     break-inside: avoid;
-    break-after: left;
-    background-color: purple;
     width: 100%;
     height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .month-cover {
     break-inside: avoid;
-    break-after: right;
-    background-color: yellow;
     width: 100%;
     height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .month {
@@ -66,7 +80,6 @@ html {
 
 .full.month {
     break-inside: avoid;
-    break-after: left;
     width: 100%;
     height: 100%;
 }
@@ -86,14 +99,29 @@ html {
 
 .full > .month-grid > .day > .events {
     position: absolute;
+    top: 0.65rem;
+    left: 2rem;
+    font-size: 0.9rem;
+}
+
+.full > .month-grid > .day > .holidays {
+    position: absolute;
     bottom: 0.6rem;
     left: 0.6rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+}
+
+.full > .month-grid > .day > .day-label {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    font-family: "Noto Serif", serif;
 }
 
 .full > .month-name {
-    font-size: 2rem;
+    font-size: 6rem;
     padding: 0.5rem;
+    font-family: "Dancing Script", serif;
 }
 
 .full > .month-grid > * {
@@ -113,4 +141,5 @@ html {
 .preview > .month-grid > .day {
     display: grid;
     place-items: center;
+    font-size: 0.9rem;
 }

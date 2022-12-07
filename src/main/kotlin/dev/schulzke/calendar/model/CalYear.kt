@@ -5,13 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class CalYear private constructor(
+    val year: Int,
     private val months: List<CalMonth>,
 ) : Iterable<CalMonth> by months {
     companion object {
         fun of(year: Int): CalYear {
-            return CalYear(Month.values().map {
-                CalMonth.of(year, it)
-            } + listOf(CalMonth.of(year + 1, Month.JANUARY, includeYearInName = true)))
+            return CalYear(year, Month.values().mapIndexed { index, month ->
+                CalMonth.of(year, month, "${(index + 1).toString().padStart(2, '0')}.${month.name.lowercase()}")
+            } + listOf(CalMonth.of(year + 1, Month.JANUARY, "13.january", includeYearInName = true)))
         }
     }
 }
