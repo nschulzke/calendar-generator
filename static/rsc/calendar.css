@@ -118,10 +118,48 @@ html {
     font-family: "Noto Serif", serif;
 }
 
-.full > .month-name {
+.full > .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    height: 131px;
+}
+
+.full > .heading > .month-name {
     font-size: 6rem;
     padding: 0.5rem;
     font-family: "Dancing Script", serif;
+}
+
+.quote {
+    --width: 50ch;
+    max-width: var(--width);
+    margin-bottom: 2em;
+    text-align: justify;
+}
+
+.quote-attribution {
+    margin-top: 0.5em;
+    position: relative;
+    padding-left: 22px;
+}
+
+.quote-attribution::before {
+    content: "— ";
+    position: absolute;
+    left: 0;
+}
+
+.quote-author {
+
+}
+
+.quote-work::before {
+    content: ", ";
+}
+
+.quote-work {
+    font-style: italic;
 }
 
 .full > .month-grid > * {
@@ -132,6 +170,7 @@ html {
 
 .preview.month {
     background-color: white;
+    padding: 0.3rem 0.6rem;
 }
 
 .preview.month > .month-name {

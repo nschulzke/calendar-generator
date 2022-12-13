@@ -16,8 +16,31 @@ fun HtmlBlockTag.month(
     minWeeks: Int? = null,
 ) {
     div(classes = "month $classes weeks-${month.numberOfWeeks(config.startOfWeek, minWeeks)}") {
-        div(classes = "month-name") {
-            +month.name
+        div(classes = "heading") {
+            div(classes = "month-name") {
+                +month.name
+            }
+            val quote = config.quotes[month.id]
+            if (quote !== null) {
+                div(classes = "quote") {
+                    if (quote.widthOverride != null) {
+                        style = "--width: ${quote.widthOverride}ch;"
+                    }
+                    div(classes = "quote-text") {
+                        +quote.text
+                    }
+                    div(classes = "quote-attribution") {
+                        span(classes = "quote-author") {
+                            +quote.author
+                        }
+                        if (quote.work !== null) {
+                            span(classes = "quote-work") {
+                                +quote.work
+                            }
+                        }
+                    }
+                }
+            }
         }
         if (fullMonth) {
             div(classes = "weekdays") {
