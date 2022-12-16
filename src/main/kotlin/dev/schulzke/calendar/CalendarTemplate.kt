@@ -46,7 +46,7 @@ fun HtmlBlockTag.month(
             div(classes = "weekdays") {
                 val weekDays = ((config.startOfWeek.value - 1)..(5 + config.startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
                 for (day in weekDays) {
-                    div(classes = "weekday") {
+                    div(classes = "weekday ${day.name.lowercase()}") {
                         +day.getDisplayName(TextStyle.FULL, Locale.US)
                     }
                 }
@@ -55,31 +55,35 @@ fun HtmlBlockTag.month(
         div(classes = "month-grid") {
             val dayIter = month.iterator()
             var startPadding = month.initialPaddingSize(config.startOfWeek)
-            var fieldsFilled = 0;
+            var fieldsFilled = 0
+            var dayOfWeek = config.startOfWeek
             if (month.previewsAtStart(config.startOfWeek)) {
                 if (month.previousMonth != null && month.nextMonth != null) {
                     val maxWeeks = maxOf(
                         month.previousMonth.numberOfWeeks(config.startOfWeek),
                         month.nextMonth.numberOfWeeks(config.startOfWeek)
                     )
-                    month(month.previousMonth, "preview", config, minWeeks = maxWeeks)
+                    month(month.previousMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
-                    month(month.nextMonth, "preview", config, minWeeks = maxWeeks)
+                    dayOfWeek = dayOfWeek.plus(1)
+                    month(month.nextMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
                     startPadding--
                     fieldsFilled++
+                    dayOfWeek = dayOfWeek.plus(1)
                 }
             }
             while (startPadding > 0) {
-                div(classes = "day") {
+                div(classes = "day ${dayOfWeek.name.lowercase()}") {
                     +" "
                 }
                 fieldsFilled++
                 startPadding--
+                dayOfWeek = dayOfWeek.plus(1)
             }
             while (dayIter.hasNext()) {
                 val day = dayIter.next()
-                div(classes = "day") {
+                div(classes = "day ${dayOfWeek.name.lowercase()}") {
                     div(classes = "day-label") {
                         +day.date.dayOfMonth.toString()
                     }
@@ -105,16 +109,18 @@ fun HtmlBlockTag.month(
                     }
                 }
                 fieldsFilled++
+                dayOfWeek = dayOfWeek.plus(1)
             }
             var endPadding = (7 - (fieldsFilled % 7)) % 7
             if (minWeeks != null && month.numberOfWeeks(config.startOfWeek) < minWeeks) {
                 endPadding += 7
             }
             while (endPadding > 2) {
-                div(classes = "day") {
+                div(classes = "day ${dayOfWeek.name.lowercase()}") {
                     +" "
                 }
                 endPadding--
+                dayOfWeek = dayOfWeek.plus(1)
             }
             if (!month.previewsAtStart(config.startOfWeek)) {
                 if (month.previousMonth != null && month.nextMonth != null) {
@@ -122,15 +128,18 @@ fun HtmlBlockTag.month(
                         month.previousMonth.numberOfWeeks(config.startOfWeek),
                         month.nextMonth.numberOfWeeks(config.startOfWeek)
                     )
-                    month(month.previousMonth, "preview", config, minWeeks = maxWeeks)
-                    month(month.nextMonth, "preview", config, minWeeks = maxWeeks)
+                    month(month.previousMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
+                    dayOfWeek = dayOfWeek.plus(1)
+                    month(month.nextMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
+                    dayOfWeek = dayOfWeek.plus(1)
                 }
             } else {
                 while (endPadding > 0) {
-                    div(classes = "day") {
+                    div(classes = "day ${dayOfWeek.name.lowercase()}") {
                         +" "
                     }
                     endPadding--
+                    dayOfWeek = dayOfWeek.plus(1)
                 }
             }
         }

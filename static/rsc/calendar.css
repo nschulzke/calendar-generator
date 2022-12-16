@@ -1,5 +1,5 @@
 @page {
-    size: A3 landscape;
+    size: 400mm 300mm;
 }
 
 @page :left {
@@ -36,8 +36,8 @@ html {
     break-inside: avoid;
     width: 100%;
     height: 100%;
-    background-size: contain;
-    background-position: center;
+    background-size: cover;
+    background-position: center top;
     background-repeat: no-repeat;
 }
 
@@ -49,12 +49,25 @@ html {
 .weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    border: 1px solid black;
+    border-bottom: 0;
+    gap: 1px;
 }
 
 .weekday {
     text-align: center;
     font-size: 1.2rem;
     padding: 0.4rem;
+    background-color: white;
+}
+
+.weekday.friday {
+    border-right: 1px solid black;
+}
+
+.weekday.saturday {
+    border-left: 2px solid black;
+    margin-left: -1px;
 }
 
 .month-grid {
@@ -82,6 +95,20 @@ html {
     break-inside: avoid;
     width: 100%;
     height: 100%;
+    position: relative;
+}
+
+.pagedjs_right_page .pagedjs_pagebox::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 8mm;
+    width: 4mm;
+    height: 4mm;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: black;
+    z-index: 10;
 }
 
 .full > .month-grid {
@@ -95,6 +122,14 @@ html {
 .full > .month-grid > .day {
     overflow: auto;
     position: relative;
+}
+
+.full > .month-grid > .friday {
+    border-right: 1px solid black;
+}
+
+.full > .month-grid > .saturday {
+    border-left: 1px solid black;
 }
 
 .full > .month-grid > .day > .events {
