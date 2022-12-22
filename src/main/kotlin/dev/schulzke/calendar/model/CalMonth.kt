@@ -30,8 +30,15 @@ class CalMonth private constructor(
     fun previewsAtStart(startOfWeek: DayOfWeek): Boolean =
         initialPaddingSize(startOfWeek) >= 2
 
-    fun initialPaddingSize(startOfWeek: DayOfWeek): Int =
-        startOfWeek.distanceTo(startingWeekday)
+    fun initialPaddingSize(startOfWeek: DayOfWeek): Int {
+        var count = 0
+        var weekday = startOfWeek
+        while (weekday != startingWeekday) {
+            count++
+            weekday = weekday.plus(1)
+        }
+        return count
+    }
 
     companion object {
         fun of(year: Int, month: Month, id: String? = null, includePrevious: Boolean = true, includeYearInName: Boolean = false): CalMonth {

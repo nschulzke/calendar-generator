@@ -54,7 +54,6 @@ fun HtmlBlockTag.month(
         }
         div(classes = "month-grid") {
             val dayIter = month.iterator()
-            var startPadding = month.initialPaddingSize(config.startOfWeek)
             var fieldsFilled = 0
             var dayOfWeek = config.startOfWeek
             if (month.previewsAtStart(config.startOfWeek)) {
@@ -64,21 +63,18 @@ fun HtmlBlockTag.month(
                         month.nextMonth.numberOfWeeks(config.startOfWeek)
                     )
                     month(month.previousMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
-                    startPadding--
                     fieldsFilled++
                     dayOfWeek = dayOfWeek.plus(1)
                     month(month.nextMonth, "preview ${dayOfWeek.name.lowercase()}", config, minWeeks = maxWeeks)
-                    startPadding--
                     fieldsFilled++
                     dayOfWeek = dayOfWeek.plus(1)
                 }
             }
-            while (startPadding > 0) {
+            while (dayOfWeek != month.startingWeekday) {
                 div(classes = "day ${dayOfWeek.name.lowercase()}") {
                     +" "
                 }
                 fieldsFilled++
-                startPadding--
                 dayOfWeek = dayOfWeek.plus(1)
             }
             while (dayIter.hasNext()) {
