@@ -61,13 +61,31 @@ html {
     background-color: white;
 }
 
-.weekday.friday {
+.start-on-monday .weekday.friday {
     border-right: 1px solid black;
 }
 
-.weekday.saturday {
+.start-on-monday .weekday.saturday {
     border-left: 2px solid black;
     margin-left: -1px;
+}
+
+.start-on-sunday .weekday.friday {
+    border-right: 1px solid black;
+}
+
+.start-on-sunday .weekday.monday {
+    border-left: 1px solid black;
+}
+
+.start-on-sunday .weekday.saturday {
+    border-left: 2px solid black;
+    margin-left: -1px;
+}
+
+.start-on-sunday .weekday.sunday {
+    border-right: 2px solid black;
+    margin-right: -1px;
 }
 
 .month-grid {
@@ -124,11 +142,27 @@ html {
     position: relative;
 }
 
-.full > .month-grid > .friday {
+.full.start-on-monday > .month-grid > .friday {
     border-right: 1px solid black;
 }
 
-.full > .month-grid > .saturday {
+.full.start-on-monday > .month-grid > .saturday {
+    border-left: 1px solid black;
+}
+
+.full.start-on-sunday > .month-grid > .sunday {
+    border-right: 1px solid black;
+}
+
+.full.start-on-sunday > .month-grid > .monday {
+    border-left: 1px solid black;
+}
+
+.full.start-on-sunday > .month-grid > .friday {
+    border-right: 1px solid black;
+}
+
+.full.start-on-sunday > .month-grid > .saturday {
     border-left: 1px solid black;
 }
 

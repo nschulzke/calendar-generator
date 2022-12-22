@@ -171,7 +171,7 @@ fun HTML.calendarTemplate(
             div(classes = "month-cover") {
                 style = "background-image: url(\"/cfg/${config.id}/${year.year}/months/${month.id}.png\")"
             }
-            month(month, "full", config, true, 5)
+            month(month, "full start-on-${config.startOfWeek.name.lowercase()}", config, true, 5)
         }
     }
 }
