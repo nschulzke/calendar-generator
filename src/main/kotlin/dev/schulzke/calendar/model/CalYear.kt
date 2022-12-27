@@ -9,10 +9,10 @@ class CalYear private constructor(
     private val months: List<CalMonth>,
 ) : Iterable<CalMonth> by months {
     companion object {
-        fun of(year: Int): CalYear {
+        fun of(year: Int, extraMonth: Boolean): CalYear {
             return CalYear(year, Month.values().mapIndexed { index, month ->
                 CalMonth.of(year, month, "${(index + 1).toString().padStart(2, '0')}.${month.name.lowercase()}")
-            } + listOf(CalMonth.of(year + 1, Month.JANUARY, "13.january", includeYearInName = true)))
+            } + (if (extraMonth) listOf(CalMonth.of(year + 1, Month.JANUARY, "13.january", includeYearInName = true)) else emptyList()))
         }
     }
 }

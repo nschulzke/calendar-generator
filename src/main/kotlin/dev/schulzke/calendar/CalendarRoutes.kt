@@ -29,7 +29,7 @@ fun Application.calendarRoutes() {
             if (year == null) {
                 call.respondText(text = "400: Bad Request", status = HttpStatusCode.BadRequest)
             } else {
-                val calYear = CalYear.of(year)
+                val calYear = CalYear.of(year, config.includeExtraMonth)
                 call.respondHtml { calendarTemplate(calYear, config) }
             }
         }

@@ -27,15 +27,19 @@ fun HtmlBlockTag.month(
                         style = "--width: ${quote.widthOverride}ch;"
                     }
                     div(classes = "quote-text") {
-                        +quote.text
-                    }
-                    div(classes = "quote-attribution") {
-                        span(classes = "quote-author") {
-                            +quote.author
+                        unsafe {
+                            +quote.text
                         }
-                        if (quote.work !== null) {
-                            span(classes = "quote-work") {
-                                +quote.work
+                    }
+                    if (quote.author != null ) {
+                        div(classes = "quote-attribution") {
+                            span(classes = "quote-author") {
+                                +quote.author
+                            }
+                            if (quote.work != null) {
+                                span(classes = "quote-work") {
+                                    +quote.work
+                                }
                             }
                         }
                     }

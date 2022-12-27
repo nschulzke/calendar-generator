@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class CalendarConfig(
     val id: String,
     val startOfWeek: DayOfWeek,
+    val includeExtraMonth: Boolean = true,
     val quotes: Map<String, Quote>,
     val holidays: Map<LocalDate, List<String>>,
     val events: Map<LocalDate, List<String>>,
@@ -16,7 +17,7 @@ data class CalendarConfig(
 @Serializable
 data class Quote(
     val text: String,
-    val author: String,
+    val author: String? = null,
     val work: String? = null,
     val widthOverride: Int? = null,
 )
