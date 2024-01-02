@@ -9,9 +9,18 @@ data class CalendarConfig(
     val id: String,
     val startOfWeek: DayOfWeek,
     val includeExtraMonth: Boolean = true,
-    val quotes: Map<String, Quote>,
+    val coverImage: String? = null,
+    val coverAttribution: String? = null,
+    val months: Map<String, MonthConfig>,
     val holidays: Map<LocalDate, List<String>>,
     val events: Map<LocalDate, List<String>>,
+)
+
+@Serializable
+data class MonthConfig(
+    val image: String? = null,
+    val imageAttribution: String? = null,
+    val quote: Quote? = null,
 )
 
 @Serializable

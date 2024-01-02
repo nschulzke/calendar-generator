@@ -20,7 +20,7 @@ fun HtmlBlockTag.month(
             div(classes = "month-name") {
                 +month.name
             }
-            val quote = config.quotes[month.id]
+            val quote = config.months[month.id]?.quote
             if (quote !== null) {
                 div(classes = "quote") {
                     if (quote.widthOverride != null) {
@@ -31,7 +31,7 @@ fun HtmlBlockTag.month(
                             +quote.text
                         }
                     }
-                    if (quote.author != null ) {
+                    if (quote.author != null) {
                         div(classes = "quote-attribution") {
                             span(classes = "quote-author") {
                                 +quote.author
@@ -48,7 +48,8 @@ fun HtmlBlockTag.month(
         }
         if (fullMonth) {
             div(classes = "weekdays") {
-                val weekDays = ((config.startOfWeek.value - 1)..(5 + config.startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
+                val weekDays =
+                    ((config.startOfWeek.value - 1)..(5 + config.startOfWeek.value)).map { DayOfWeek.of(it % 7 + 1) }
                 for (day in weekDays) {
                     div(classes = "weekday ${day.name.lowercase()}") {
                         +day.getDisplayName(TextStyle.FULL, Locale.US)
@@ -165,11 +166,26 @@ fun HTML.calendarTemplate(
     }
     body {
         div(classes = "calendar-cover") {
-            style = "background-image: url(\"/cfg/${config.id}/${year.year}/cover.png\")"
+            if (config.coverImage != null) {
+                style = "background-image: url(\"/cfg/${config.id}/${year.year}/${config.coverImage}\")"
+            }
+            if (config.coverAttribution != null) {
+                div(classes = "attribution") {
+                    +config.coverAttribution
+                }
+            }
         }
         year.forEach { month ->
+            val monthConfig = config.months[month.id]
             div(classes = "month-cover") {
-                style = "background-image: url(\"/cfg/${config.id}/${year.year}/months/${month.id}.png\")"
+                if (monthConfig?.image != null) {
+                    style = "background-image: url(\"/cfg/${config.id}/${year.year}/${monthConfig.image}\")"
+                }
+                if (monthConfig?.imageAttribution != null) {
+                    div(classes = "attribution") {
+                        +monthConfig.imageAttribution
+                    }
+                }
             }
             month(month, "full start-on-${config.startOfWeek.name.lowercase()}", config, true, 5)
         }
